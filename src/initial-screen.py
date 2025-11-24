@@ -35,6 +35,6 @@ def screen_stocks():
     except KeyError:
         stock_dict = {stocks['shortName']: stocks['symbol'] for stocks in data}
 
-    print(stock_dict)
+    return stock_dict
 
-screen_stocks()
+stock_dict = screen_stocks()
