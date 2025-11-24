@@ -1,0 +1,22 @@
+# Python virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# PyCharm settings
+.idea/
+
+# Bytecode cache
+__pycache__/
+*.py[cod]
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Anaconda project folders
+anaconda_projects/
+notebooks/anacononda_projects
+
+
