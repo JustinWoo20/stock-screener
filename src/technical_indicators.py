@@ -1,4 +1,5 @@
 from get_financials import ticker
+import matplotlib.pyplot as plt
 import ta
 import pandas as pd
 import plotly.express as px
@@ -28,3 +29,26 @@ def get_rsi(ticker, history):
     rsi_plot.show()
     return rsi
 rsi = get_rsi(ticker=ticker, history=history3)
+
+def plot_rsi_price(ticker, history, r):
+    plt.figure(figsize=(14, 8), dpi=120)
+    plt.xticks(fontsize=14, rotation=45)
+    plt.yticks(fontsize=14)
+    plt.title(f"{ticker.info['shortName']} 14-Day RSI and Price")
+
+    ax1 = plt.gca()
+    ax2 = ax1.twinx()
+
+    ax1.set_xlim([history.index.min(), history.index.max()])
+    ax1.set_ylim([0, r.max() + 5])
+    ax2.set_ylim([history.Close.min() - 30, history.Close.max() + 30])
+
+    ax1.plot(history.index, r.values, color='red')
+    ax2.plot(history.index, history.Close, color='green')
+    ax1.axhline(y=70, linestyle='--', color='blue', alpha=0.5)
+    ax1.axhline(y=30, linestyle='--', color='red', alpha=0.5)
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('RSI', color='red')
+    ax2.set_ylabel('Price', color='green')
+    plt.show()
+plot_rsi_price(ticker=ticker, history=history3, r=rsi)
