@@ -1,4 +1,5 @@
 from get_financials import ticker, income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q, years, quarters
+import pandas as pd
 import plotly.express as px
 
 def get_price_targets(ticker):
@@ -112,3 +113,132 @@ def get_fcf_margin_q(ticker, income, cashflow, ticks):
     fcf_margin_bar.show()
 
 
+def get_oi_growth(ticker, income, ticks):
+    # Graph Operating Income Growth for the previous 3 years
+    loop = 1
+    oig_list = []
+    for oi in income.OperatingIncome.values:
+        previous_oi = oi
+        if loop >= 2:
+            oig = (current_oi - previous_oi) / abs(previous_oi)
+            oig_list.append(oig)
+        loop += 1
+        current_oi = oi
+    # Create operating income growth dataframe
+    oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
+
+    oig_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
+                     title=f"{ticker.info['shortName']} Yearly Operating Income Growth",
+                     height=500)
+    oig_bar.update_layout(xaxis_title='Date')
+    oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
+    oig_bar.show()
+
+
+def get_oi_q_growth(ticker, income, ticks):
+    # Graph Quarterly Operating Income Growth
+    loop = 1
+    oig_list = []
+    for oi in income.OperatingIncome.values:
+        previous_oi = oi
+        if loop >= 2:
+            oig = (current_oi - previous_oi) / abs(previous_oi)
+            oig_list.append(oig)
+        loop += 1
+        current_oi = oi
+    # Create quarterly operating income growth dataframe
+    oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
+    # Drop null values
+    oig = oig.dropna()
+
+    oig_q_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
+                       title=f"{ticker.info['shortName']} Quarterly Operating Income Growth",
+                       height=500)
+    oig_q_bar.update_layout(xaxis_title='Quarter')
+    oig_q_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
+    oig_q_bar.show()
+
+def get_operating_margin(ticker, income, ticks):
+    # Graph yearly operating margin
+    om = (income.OperatingIncome / income.TotalRevenue) * 100
+
+    om_bar = px.bar(om, x=om.index, y=om.values, title=f"{ticker.info['shortName']} Yearly Operating Margin",
+                   height=500)
+    om_bar.update_layout(xaxis_title='Date', yaxis_title='Operating Margin')
+    om_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+    om_bar.show()
+    return om
+
+def get_om_trend(ticker, om_data, ticks):
+    #Graph operating margin change
+    loop = 1
+    omt_list = []
+    for om in om_data.values:
+        previous_om = om
+        if loop >= 2:
+            omt = current_om - previous_om
+            omt_list.append(omt)
+        loop += 1
+        current_om = om
+    # Make new dataframe
+    om_trend = pd.DataFrame({'Operating Margin Trend': omt_list}, index=ticks[:len(omt_list)])
+
+    om_trend_bar = px.bar(om_trend, x=om_trend.index, y='Operating Margin Trend', title=f"{ticker.info['shortName']} Yearly Operating Margin Trend",
+                          height=500)
+    om_trend_bar.update_layout(xaxis_title='Date')
+    om_trend_bar.update_xaxes(tickvals=om_trend.index, ticktext=ticks)
+    om_trend_bar.show()
+
+def get_operating_margin_q(ticker, income, ticks):
+    # Graph yearly operating margin
+    om_q = (income.OperatingIncome / income.TotalRevenue) * 100
+    om_q = om_q.dropna()
+    om_bar = px.bar(om_q, x=om_q.index, y=om_q.values, title=f"{ticker.info['shortName']} Quarterly Operating Margin",
+                   height=500)
+    om_bar.update_layout(xaxis_title='Date', yaxis_title='Operating Margin')
+    om_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+    om_bar.show()
+    return om_q
+
+def get_om_q_trend(ticker, om_data, ticks):
+    #Graph quarterly operating margin change
+    loop = 1
+    omt_list = []
+    for om in om_data.values:
+        previous_om = om
+        if loop >= 2:
+            omt = current_om - previous_om
+            omt_list.append(omt)
+        loop += 1
+        current_om = om
+    # Make new dataframe
+    om_trend = pd.DataFrame({'Operating Margin Trend': omt_list}, index=ticks[:len(omt_list)])
+
+    om_trend_bar = px.bar(om_trend, x=om_trend.index, y='Operating Margin Trend',
+                          title=f"{ticker.info['shortName']} Quarterly Operating Margin Trend", height=500)
+    om_trend_bar.update_layout(xaxis_title='Quarter')
+    om_trend_bar.update_xaxes(tickvals=om_trend.index, ticktext=ticks)
+    om_trend_bar.show()
+
+def get_gross_margin(ticker, income, ticks):
+    #Graph yearly gross margin
+    income['Gross Margin'] = income.GrossProfit / income.TotalRevenue
+
+    grossmargin_bar = px.bar(income, x=income.index, y='Gross Margin',
+                             title=f"{ticker.info['shortName']} Yearly Gross Margin",
+                             height=500)
+    grossmargin_bar.update_layout(xaxis_title='Date')
+    grossmargin_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+    grossmargin_bar.show()
+
+def get_gross_q_margin(ticker, income, ticks):
+    #Graph quarterly gross margin
+    gross_margin = income.GrossProfit / income.TotalRevenue
+    gross_margin = gross_margin.dropna()
+
+    grossmargin_q_bar = px.bar(gross_margin, x=gross_margin.index, y=gross_margin.values,
+                               title=f"{ticker.info['shortName']} Quarterly Gross Margin",
+                             height=500)
+    grossmargin_q_bar.update_layout(xaxis_title='Quarter', yaxis_title='Gross Margin')
+    grossmargin_q_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+    grossmargin_q_bar.show()
