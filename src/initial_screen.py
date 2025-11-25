@@ -36,5 +36,3 @@ def screen_stocks():
         stock_dict = {stocks['shortName']: stocks['symbol'] for stocks in data}
 
     return stock_dict
-
-stock_dict = screen_stocks()

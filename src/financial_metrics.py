@@ -1,4 +1,4 @@
-from get_financials import ticker, income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q, years, quarters
+# from get_financials import *
 import pandas as pd
 import plotly.express as px
 
@@ -111,6 +111,8 @@ def get_fcf_margin_q(ticker, income, cashflow, ticks):
     fcf_margin_bar.update_layout(xaxis_title='Quarter', yaxis_title='Margin')
     fcf_margin_bar.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
     fcf_margin_bar.show()
+
+# get_fcf_margin_q(ticker=ticker, income=income_q, cashflow=cashflow_q, ticks=quarters)
 
 
 def get_oi_growth(ticker, income, ticks):

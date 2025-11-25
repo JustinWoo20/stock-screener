@@ -1,4 +1,4 @@
-from get_financials import ticker
+# from get_financials import ticker
 import matplotlib.pyplot as plt
 import ta
 import pandas as pd
@@ -10,11 +10,11 @@ def get_historical_prices(ticker):
     one_year = ticker.history(period='1y')
     three_year = ticker.history(period='3y')
     return one_year, three_year
-history1, history3 = get_historical_prices(ticker=ticker)
+# history1, history3 = get_historical_prices(ticker=ticker)
 
-def plot_closing(ticker, history3):
+def plot_closing(ticker, history):
     # Plot 3 year closing Price
-    price_plot = px.line(history3, x=history3.index, y=history3.Close, title=f"{ticker.info['shortName']} 3 Year Closing Price", height=500)
+    price_plot = px.line(history, x=history.index, y=history.Close, title=f"{ticker.info['shortName']} 3 Year Closing Price", height=500)
     price_plot.update_layout(xaxis_title='Date', yaxis_title='Closing Price')
     price_plot.show()
 
