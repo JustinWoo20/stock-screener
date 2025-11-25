@@ -65,8 +65,6 @@ def get_macd(ticker, history):
     macd_plot.update_layout(xaxis_title='Date', yaxis_title='MACD')
     macd_plot.show()
     return macd_df
-macd_df = get_macd(ticker=ticker, history=history1)
-
 
 def plot_price_indicators(m, ticker, history):
     # Find indicators
@@ -88,4 +86,35 @@ def plot_price_indicators(m, ticker, history):
                                 title=f"{ticker.info['shortName']} Closing Price with MACD Indicators")
     price_signals.show()
 
-plot_price_indicators(m=macd_df, ticker=ticker, history=history1)
+def get_stoch_osc(ticker, history):
+    stoch = ta.momentum.StochasticOscillator(high=history['High'], close=history['Close'], low=history['Low'],
+                                             window=14, smooth_window=3)
+    history['%K'] = stoch.stoch()
+    history['%D'] = stoch.stoch_signal()
+    history_copy = history.copy()
+    stoch_plot = px.line(history, x=history.index, y=['%K', '%D'],
+                         title=f"{ticker.info['shortName']} 14-Day Stochastic Oscillator", height=500)
+    stoch_plot.update_layout(xaxis_title='Date', yaxis_title='Stochastic Oscillator')
+    stoch_plot.add_hline(y=80, line_dash='dash', line_color='red')
+    stoch_plot.add_hline(y=20, line_dash='dash', line_color='green')
+    stoch_plot.show()
+    return history_copy
+
+def plot_price_stoch(ticker, history):
+    #Find buy and sell signals
+    history['bullish_stoch'] = (history['%K'] > history['%D']) & (history['%K'].shift(1) < history['%D'].shift(1))
+    history['bearish_stoch'] = (history['%K'] < history['%D']) & (history['%K'].shift(1) > history['%D'].shift(1))
+    buy_dates_s = history[history['bullish_stoch']].index
+    sell_dates_s = history[history['bearish_stoch']].index
+
+    price_stoch = go.Figure()
+    price_stoch.add_trace(go.Scatter(x=history.index, y=history.Close, mode='lines', name='Closing Price'))
+    price_stoch.add_trace(go.Scatter(x=buy_dates_s, y=history.loc[buy_dates_s, 'Close'], mode='markers',
+                                     marker_symbol='triangle-up', marker_color='green', name='Buy Signal',
+                                     marker_size=12))
+    price_stoch.add_trace(go.Scatter(x=sell_dates_s, y=history.loc[sell_dates_s, 'Close'], mode='markers',
+                                     marker_symbol='triangle-down', marker_color='red', name='Sell Signal',
+                                     marker_size=12))
+    price_stoch.update_layout(yaxis_title='Price', xaxis_title='Date', height=600,
+                              title=f'{ticker.info['shortName']} Closing Price with Stochastic Oscillator Indicators')
+    price_stoch.show()
