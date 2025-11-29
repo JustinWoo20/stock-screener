@@ -2,23 +2,33 @@
 import pandas as pd
 import plotly.express as px
 
-def get_price_targets(ticker):
+def get_investor_confidence(ticker):
     # Obtain price targets based on analyst estimates
     analyst = ticker.analyst_price_targets
-    upside_potential = analyst['median'] / analyst['current']
-    risk_adjusted = (analyst['low'] + analyst['high'] + analyst['mean']) / 3
-    print(f'The lowest analyst estimate for {ticker.info['shortName']} is: ${analyst['low']}')
-    print(f'The median analyst estimate for {ticker.info['shortName']} is: ${analyst['median']}')
-    print(f'The highest analyst estimate for {ticker.info['shortName']} is: ${analyst['high']}')
-    print(f'The upside potential for {ticker.info['shortName']} is: {round(upside_potential * 100, 2)}%')
-    print(f'The risk-adjusted target for {ticker.info['shortName']} is ${round(risk_adjusted, 2)}')
-
-def get_insider_stats(ticker):
-    # Obtain data on insider trading
     holders = ticker.major_holders
-    print(f'The percentage held by insiders: {round(holders.loc['insidersPercentHeld', 'Value'] * 100, 4)}%')
-    print(f'The percentage held by institutions: {round(holders.loc['institutionsPercentHeld', 'Value'] * 100, 4)}%')
-    print(ticker.insider_purchases)
+    insider_purchases = ticker.insider_purchases
+
+    insiderPercentHeld = round(holders.loc['insidersPercentHeld', 'Value'] * 100, 4)
+    institutionsPercentHeld = round(holders.loc['institutionsPercentHeld', 'Value'] * 100, 4)
+    upside_potential = round(analyst['median'] / analyst['current'], 4)
+    risk_adjusted = round((analyst['low'] + analyst['high'] + analyst['mean']) / 3, 2)
+    purchased_shares = insider_purchases.loc[0, 'Shares']
+    purchase_transactions = insider_purchases.loc[0, 'Trans']
+    sold_shares = insider_purchases.loc[1, 'Shares']
+    sold_transactions = insider_purchases.loc[1, 'Trans']
+    net_purchased = insider_purchases.loc[2, 'Shares']
+
+    analyst['upside_potential'] = upside_potential
+    analyst['risk_adjusted'] = risk_adjusted
+    analyst['insider_percentHeld'] = insiderPercentHeld
+    analyst['institutions_percentHeld'] = institutionsPercentHeld
+    analyst['purchasedShares'] = purchased_shares
+    analyst['purchaseTransactions'] =  purchase_transactions
+    analyst['soldShares'] = sold_shares
+    analyst['soldTransactions'] = sold_transactions
+    analyst['netPurchases'] = net_purchased
+    price_targets = pd.DataFrame.from_dict(data=analyst, orient='index', columns=['Quick Stats'] )
+    return price_targets
 
 def get_net_income_y(ticker, income, ticks):
     # Graphs yearly net income

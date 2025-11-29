@@ -16,8 +16,7 @@ for stock in stock_dict.values():
     print(ticker)
 
     # financial_metrics src
-    price_targets = financial_metrics.get_price_targets(ticker=ticker)
-    insiders = financial_metrics.get_insider_stats(ticker=ticker)
+    price_targets = financial_metrics.get_investor_confidence(ticker=ticker)
     ni_y = financial_metrics.get_net_income_y(ticker=ticker, income=income_y, ticks=years)
     ni_q = financial_metrics.get_net_income_q(ticker=ticker, income=income_q, ticks=quarters)
     se_y = financial_metrics.get_shareholder_equity(ticker=ticker, income=income_y, balance=balance_y, ticks=years)
@@ -45,4 +44,7 @@ for stock in stock_dict.values():
     macd_indicators = technical_indicators.plot_macd_price_indicators(ticker=ticker, history=history1, m=macd_df)
     history_stoch, stoch_plot = technical_indicators.get_stoch_osc(ticker=ticker, history=history1)
     stoch_indicator_plot = technical_indicators.plot_price_stoch(ticker=ticker, history=history_stoch)
+
+# Put charts into excel file
+
 
