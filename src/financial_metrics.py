@@ -27,7 +27,8 @@ def get_net_income_y(ticker, income, ticks):
     ni_year_bar.update_layout(xaxis_title='Date', yaxis_title='Net Income')
     ni_year_bar.update_xaxes(tickvals=income.index,
                              ticktext=ticks)
-    ni_year_bar.show()
+    # ni_year_bar.show()
+    return ni_year_bar
 
 def get_net_income_q(ticker, income, ticks):
     # Graphs quarterly net income
@@ -37,7 +38,8 @@ def get_net_income_q(ticker, income, ticks):
                          y='NetIncome', title=f'{ticker.info['shortName']} Quarterly Net Income', height=500)
     ni_quarter_bar.update_layout(xaxis_title='Quarter', yaxis_title='Net Income')
     ni_quarter_bar.update_xaxes(tickvals=net_income.index, ticktext=ticks)
-    ni_quarter_bar.show()
+    # ni_quarter_bar.show()
+    return ni_quarter_bar
 
 def get_shareholder_equity(ticker, income, balance, ticks):
     # Graph yearly shareholder equity
@@ -46,7 +48,8 @@ def get_shareholder_equity(ticker, income, balance, ticks):
     se_year_bar.update_layout(xaxis_title='Date', yaxis_title="Shareholder's Equity")
     se_year_bar.update_xaxes(tickvals=income.index,
                              ticktext=ticks)
-    se_year_bar.show()
+    # se_year_bar.show()
+    return se_year_bar
 
 def get_shareholder_equity_q(ticker, balance, ticks):
     # Graphs quarterly shareholder's equity
@@ -56,7 +59,8 @@ def get_shareholder_equity_q(ticker, balance, ticks):
                          y='StockholdersEquity', title=f"{ticker.info['shortName']} Quarterly Shareholder's Equity", height=500)
     se_quarter_bar.update_layout(xaxis_title='Quarter', yaxis_title="Shareholder's Equity")
     se_quarter_bar.update_xaxes(tickvals=balance.index, ticktext=ticks)
-    se_quarter_bar.show()
+    # se_quarter_bar.show()
+    return se_quarter_bar
 
 def get_cash_flow(ticker, cashflow, ticks):
     # Yearly operating and free cash flow graphs
@@ -66,7 +70,8 @@ def get_cash_flow(ticker, cashflow, ticks):
                          barmode='group', height=500,)
     cashflow_bar.update_layout(xaxis_title='Date', yaxis_title='Value', legend_title_text='Cash Flow Metric')
     cashflow_bar.update_xaxes(tickvals=cashflow.index, ticktext=ticks)
-    cashflow_bar.show()
+    # cashflow_bar.show()
+    return cashflow_bar
 
 def get_cashflow_q(ticker, cashflow, ticks):
     # Graph quarterly cashflow metrics
@@ -75,7 +80,8 @@ def get_cashflow_q(ticker, cashflow, ticks):
                         title=f"{ticker.info['shortName']} Quearterly OCF and FCF", barmode='group', height=500)
     cashflow_q_bar.update_layout(xaxis_title='Quarter', yaxis_title='Value')
     cashflow_q_bar.update_xaxes(tickvals=cashflow.index, ticktext=ticks)
-    cashflow_q_bar.show()
+    # cashflow_q_bar.show()
+    return cashflow_q_bar
 
 def get_roic(ticker, income, balance, ticks):
     # Graph return on invested capital
@@ -87,7 +93,8 @@ def get_roic(ticker, income, balance, ticks):
     roic_bar = px.bar(roic, x=roic.index, y=roic.values, title=f"{ticker.info['shortName']} ROIC", height=500)
     roic_bar.update_layout(xaxis_title='Date', yaxis_title='ROIC')
     roic_bar.update_xaxes(tickvals=roic.index, ticktext=ticks)
-    roic_bar.show()
+    # roic_bar.show()
+    return roic_bar
 
 def get_fcf_margin(ticker, income, cashflow, ticks):
     # Graph yearly free cash flow margin
@@ -98,22 +105,20 @@ def get_fcf_margin(ticker, income, cashflow, ticks):
                             title=f"{ticker.info['shortName']} Yearly Free Cash Flow Margin", height=500)
     fcf_margin_bar.update_layout(xaxis_title='Date', yaxis_title='Margin')
     fcf_margin_bar.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
-    fcf_margin_bar.show()
-
+    # fcf_margin_bar.show()
+    return fcf_margin_bar
 
 def get_fcf_margin_q(ticker, income, cashflow, ticks):
     # Graph yearly free cash flow margin
     fcf_margin = cashflow['FreeCashFlow'] / income['TotalRevenue']
     fcf_margin = fcf_margin.dropna()
 
-    fcf_margin_bar = px.bar(fcf_margin, x=fcf_margin.index, y=fcf_margin.values,
+    fcf_margin_bar_q = px.bar(fcf_margin, x=fcf_margin.index, y=fcf_margin.values,
                             title=f"{ticker.info['shortName']} Quarterly Free Cash Flow Margin", height=500)
-    fcf_margin_bar.update_layout(xaxis_title='Quarter', yaxis_title='Margin')
-    fcf_margin_bar.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
-    fcf_margin_bar.show()
-
-# get_fcf_margin_q(ticker=ticker, income=income_q, cashflow=cashflow_q, ticks=quarters)
-
+    fcf_margin_bar_q.update_layout(xaxis_title='Quarter', yaxis_title='Margin')
+    fcf_margin_bar_q.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
+    # fcf_margin_bar_q.show()
+    return fcf_margin_bar_q
 
 def get_oi_growth(ticker, income, ticks):
     # Graph Operating Income Growth for the previous 3 years
@@ -134,8 +139,8 @@ def get_oi_growth(ticker, income, ticks):
                      height=500)
     oig_bar.update_layout(xaxis_title='Date')
     oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
-    oig_bar.show()
-
+    # oig_bar.show()
+    return oig_bar
 
 def get_oi_q_growth(ticker, income, ticks):
     # Graph Quarterly Operating Income Growth
@@ -158,7 +163,8 @@ def get_oi_q_growth(ticker, income, ticks):
                        height=500)
     oig_q_bar.update_layout(xaxis_title='Quarter')
     oig_q_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
-    oig_q_bar.show()
+    # oig_q_bar.show()
+    return oig_q_bar
 
 def get_operating_margin(ticker, income, ticks):
     # Graph yearly operating margin
@@ -168,8 +174,8 @@ def get_operating_margin(ticker, income, ticks):
                    height=500)
     om_bar.update_layout(xaxis_title='Date', yaxis_title='Operating Margin')
     om_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    om_bar.show()
-    return om
+    # om_bar.show()
+    return om, om_bar
 
 def get_om_trend(ticker, om_data, ticks):
     #Graph operating margin change
@@ -189,18 +195,19 @@ def get_om_trend(ticker, om_data, ticks):
                           height=500)
     om_trend_bar.update_layout(xaxis_title='Date')
     om_trend_bar.update_xaxes(tickvals=om_trend.index, ticktext=ticks)
-    om_trend_bar.show()
+    # om_trend_bar.show()
+    return om_trend_bar
 
 def get_operating_margin_q(ticker, income, ticks):
     # Graph yearly operating margin
     om_q = (income.OperatingIncome / income.TotalRevenue) * 100
     om_q = om_q.dropna()
-    om_bar = px.bar(om_q, x=om_q.index, y=om_q.values, title=f"{ticker.info['shortName']} Quarterly Operating Margin",
+    om_bar_q = px.bar(om_q, x=om_q.index, y=om_q.values, title=f"{ticker.info['shortName']} Quarterly Operating Margin",
                    height=500)
-    om_bar.update_layout(xaxis_title='Date', yaxis_title='Operating Margin')
-    om_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    om_bar.show()
-    return om_q
+    om_bar_q.update_layout(xaxis_title='Date', yaxis_title='Operating Margin')
+    om_bar_q.update_xaxes(tickvals=income.index, ticktext=ticks)
+    # om_bar.show()
+    return om_q, om_bar_q
 
 def get_om_q_trend(ticker, om_data, ticks):
     #Graph quarterly operating margin change
@@ -216,11 +223,12 @@ def get_om_q_trend(ticker, om_data, ticks):
     # Make new dataframe
     om_trend = pd.DataFrame({'Operating Margin Trend': omt_list}, index=ticks[:len(omt_list)])
 
-    om_trend_bar = px.bar(om_trend, x=om_trend.index, y='Operating Margin Trend',
+    om_trend_bar_q = px.bar(om_trend, x=om_trend.index, y='Operating Margin Trend',
                           title=f"{ticker.info['shortName']} Quarterly Operating Margin Trend", height=500)
-    om_trend_bar.update_layout(xaxis_title='Quarter')
-    om_trend_bar.update_xaxes(tickvals=om_trend.index, ticktext=ticks)
-    om_trend_bar.show()
+    om_trend_bar_q.update_layout(xaxis_title='Quarter')
+    om_trend_bar_q.update_xaxes(tickvals=om_trend.index, ticktext=ticks)
+    # om_trend_bar_q.show()
+    return om_trend_bar_q
 
 def get_gross_margin(ticker, income, ticks):
     #Graph yearly gross margin
@@ -231,7 +239,8 @@ def get_gross_margin(ticker, income, ticks):
                              height=500)
     grossmargin_bar.update_layout(xaxis_title='Date')
     grossmargin_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    grossmargin_bar.show()
+    # grossmargin_bar.show()
+    return grossmargin_bar
 
 def get_gross_q_margin(ticker, income, ticks):
     #Graph quarterly gross margin
@@ -243,4 +252,5 @@ def get_gross_q_margin(ticker, income, ticks):
                              height=500)
     grossmargin_q_bar.update_layout(xaxis_title='Quarter', yaxis_title='Gross Margin')
     grossmargin_q_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    grossmargin_q_bar.show()
+    # grossmargin_q_bar.show()
+    return grossmargin_q_bar

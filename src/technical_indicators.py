@@ -1,4 +1,3 @@
-# from get_financials import ticker
 import matplotlib.pyplot as plt
 import ta
 import pandas as pd
@@ -10,13 +9,13 @@ def get_historical_prices(ticker):
     one_year = ticker.history(period='1y')
     three_year = ticker.history(period='3y')
     return one_year, three_year
-# history1, history3 = get_historical_prices(ticker=ticker)
 
 def plot_closing(ticker, history):
     # Plot 3 year closing Price
     price_plot = px.line(history, x=history.index, y=history.Close, title=f"{ticker.info['shortName']} 3 Year Closing Price", height=500)
     price_plot.update_layout(xaxis_title='Date', yaxis_title='Closing Price')
-    price_plot.show()
+    # price_plot.show()
+    return price_plot
 
 def get_rsi(ticker, history):
     # Plot rsi
@@ -27,16 +26,15 @@ def get_rsi(ticker, history):
     rsi_plot.update_layout(xaxis_title='Date', yaxis_title='RSI')
     rsi_plot.add_hline(y=70, line_dash='dash', line_color='red')
     rsi_plot.add_hline(y=30, line_dash='dash', line_color='green')
-    rsi_plot.show()
-    return rsi
+    # rsi_plot.show()
+    return rsi, rsi_plot
 
 def plot_rsi_price(ticker, history, r):
-    plt.figure(figsize=(14, 8), dpi=120)
+    fig, ax1 = plt.subplots(figsize=(14, 8), dpi=120)
     plt.xticks(fontsize=14, rotation=45)
     plt.yticks(fontsize=14)
-    plt.title(f"{ticker.info['shortName']} 14-Day RSI and Price")
+    fig.suptitle(f"{ticker.info['shortName']} 14-Day RSI and Price")
 
-    ax1 = plt.gca()
     ax2 = ax1.twinx()
 
     ax1.set_xlim([history.index.min(), history.index.max()])
@@ -50,7 +48,8 @@ def plot_rsi_price(ticker, history, r):
     ax1.set_xlabel('Date')
     ax1.set_ylabel('RSI', color='red')
     ax2.set_ylabel('Price', color='green')
-    plt.show()
+    fig.show()
+    return fig
 
 def get_macd(ticker, history):
     # Obtain macd line, signal line, and histogram

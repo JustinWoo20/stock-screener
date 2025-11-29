@@ -19,4 +19,7 @@ notebooks/.ipynb_checkpoints/
 anaconda_projects/
 notebooks/anacononda_projects
 
+# personal notes for project
+file_notes.py
+
 
