@@ -62,10 +62,10 @@ def get_macd(ticker, history):
     #Plot
     macd_plot = px.line(macd_df, x=macd_df.index, y=['MACD', 'Signal'], title=f"{ticker.info['shortName']} MACD", height=500)
     macd_plot.update_layout(xaxis_title='Date', yaxis_title='MACD')
-    macd_plot.show()
-    return macd_df
+    # macd_plot.show()
+    return macd_df, macd_plot
 
-def plot_price_indicators(m, ticker, history):
+def plot_macd_price_indicators(m, ticker, history):
     # Find indicators
     history['bullish_signal'] = (m.MACD > m.Signal) & (m.MACD.shift(1) < m.Signal.shift(1))
     history['bearish_signal'] = (m.MACD < m.Signal) & (m.MACD.shift(1) > m.Signal.shift(1))
@@ -83,7 +83,9 @@ def plot_price_indicators(m, ticker, history):
                    marker_color='red', name='Sell Signal', marker_size=12))
     price_signals.update_layout(yaxis_title='Price', xaxis_title='Date', height=600,
                                 title=f"{ticker.info['shortName']} Closing Price with MACD Indicators")
-    price_signals.show()
+    # price_signals.show()
+    return price_signals
+
 
 def get_stoch_osc(ticker, history):
     stoch = ta.momentum.StochasticOscillator(high=history['High'], close=history['Close'], low=history['Low'],
@@ -96,8 +98,8 @@ def get_stoch_osc(ticker, history):
     stoch_plot.update_layout(xaxis_title='Date', yaxis_title='Stochastic Oscillator')
     stoch_plot.add_hline(y=80, line_dash='dash', line_color='red')
     stoch_plot.add_hline(y=20, line_dash='dash', line_color='green')
-    stoch_plot.show()
-    return history_copy
+    # stoch_plot.show()
+    return history_copy, stoch_plot
 
 def plot_price_stoch(ticker, history):
     #Find buy and sell signals
@@ -116,4 +118,5 @@ def plot_price_stoch(ticker, history):
                                      marker_size=12))
     price_stoch.update_layout(yaxis_title='Price', xaxis_title='Date', height=600,
                               title=f'{ticker.info['shortName']} Closing Price with Stochastic Oscillator Indicators')
-    price_stoch.show()
+    # price_stoch.show()
+    return price_stoch
