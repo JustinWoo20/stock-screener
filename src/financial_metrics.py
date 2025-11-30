@@ -17,7 +17,7 @@ def get_investor_confidence(ticker):
     sold_shares = insider_purchases.loc[1, 'Shares']
     sold_transactions = insider_purchases.loc[1, 'Trans']
     net_purchased = insider_purchases.loc[2, 'Shares']
-
+    # Add evertying to a single dictionary
     analyst['upside_potential'] = upside_potential
     analyst['risk_adjusted'] = risk_adjusted
     analyst['insider_percentHeld'] = insiderPercentHeld
@@ -27,6 +27,7 @@ def get_investor_confidence(ticker):
     analyst['soldShares'] = sold_shares
     analyst['soldTransactions'] = sold_transactions
     analyst['netPurchases'] = net_purchased
+    # Covnert to a dataframe
     price_targets = pd.DataFrame.from_dict(data=analyst, orient='index', columns=['Quick Stats'] )
     return price_targets
 

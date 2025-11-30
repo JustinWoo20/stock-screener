@@ -48,7 +48,7 @@ def plot_rsi_price(ticker, history, r):
     ax1.set_xlabel('Date')
     ax1.set_ylabel('RSI', color='red')
     ax2.set_ylabel('Price', color='green')
-    fig.show()
+    # fig.show()
     return fig
 
 def get_macd(ticker, history):
