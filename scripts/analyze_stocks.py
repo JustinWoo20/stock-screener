@@ -1,6 +1,9 @@
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
 import pandas as pd
+import matplotlib.figure as mplfig
+import plotly.graph_objects as go
+from io import BytesIO
 
 sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical', 'Consumer Defensive',
                'Energy', 'Financial Services', 'Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
@@ -76,15 +79,30 @@ for stock in stock_dict.values():
     writer = pd.ExcelWriter(f"../outputs/{sector}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
 
     # Convert quick statistics to excel writer object
-    price_targets.to_excel(writer, sheet_name=f"{ticker.info['shortName']}")
+    price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
+    worksheet = writer.sheets[f"{ticker.info['symbol']}"]
+    # Starting row for images
+    row = 20
+    # Save images to system RAM
+    for i, fig in enumerate(figs):
+        buf = BytesIO()
+        if isinstance(fig, mplfig.Figure):
+            fig.savefig(buf, format='png')
+        elif isinstance(fig, go.Figure):
+            buf.seek(0)
+        else:
+            print("Unknown figure type:", type(fig))
+            break
 
-    #workbook = writer.book
-    #worksheet = writer.sheets[f"{ticker.info['shortName']}"]
+        buf.seek(0)
 
-    # worksheet.insert_image(figs)
-    writer.close()
-    break
+        # Inset images and close excel writer
+        worksheet.insert_image(row, 1, f"fig_{i}.png", {"image_data": buf})
+        writer.close()
+
+        row += 25
+        break
 
 # Put charts into excel file
-
-
+# Option 1: Make one excel workbook per sector
+# Option 2: Make one excell workbook per stock
