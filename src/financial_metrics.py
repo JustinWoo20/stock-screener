@@ -30,6 +30,7 @@ def get_investor_confidence(ticker):
     # Covnert to a dataframe
     price_targets = pd.DataFrame.from_dict(data=analyst, orient='index', columns=['Quick Stats'] )
     return price_targets
+# print(get_investor_confidence(ticker=ticker))
 
 def get_net_income_y(ticker, income, ticks):
     # Graphs yearly net income

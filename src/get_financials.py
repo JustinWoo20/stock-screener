@@ -3,7 +3,7 @@ import yfinance as yf
 def get_ticker(stock_symbol):
     stock = yf.Ticker(stock_symbol)
     return stock
-ticker = get_ticker(stock_symbol='FICO')
+# ticker = get_ticker(stock_symbol='WIX')
 
 def financial_statements(ticker):
     income_yearly = ticker.get_income_stmt()
@@ -19,11 +19,11 @@ def financial_statements(ticker):
     cashflow_quarterly = ticker.get_cash_flow(freq='quarterly')
     cashflow_quarterly = cashflow_quarterly.transpose()
     return income_yearly, income_quarterly, balance_yearly, balance_quarterly, cashflow_yearly, cashflow_quarterly
-income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q = financial_statements(ticker)
+# income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q = financial_statements(ticker)
 
 def useful_variables(year_data, quarter_data):
     years = year_data.index.tolist()
     years = [d.strftime('%Y-%m-%d') for d in years]
     quarters = quarter_data.index.to_period('Q').astype(str)
     return years, quarters
-years, quarters = useful_variables(income_y, income_q)
+# years, quarters = useful_variables(income_y, income_q)

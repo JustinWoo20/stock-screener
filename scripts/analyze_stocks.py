@@ -1,5 +1,6 @@
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
+import kaleido
 import pandas as pd
 import matplotlib.figure as mplfig
 import plotly.graph_objects as go
@@ -7,9 +8,20 @@ from io import BytesIO
 
 sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical', 'Consumer Defensive',
                'Energy', 'Financial Services', 'Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
+debug_dict = {'Fair Isaac': 'FICO',
+              'Wix.com': 'WIX',
+              'Next Technology Holding': 'NXTT',
+              'Electro-Sensors': 'ELSE',
+              'Tuya': 'TUYA', 'Yalla': 'YALA',
+              'Full Truck Alliance': 'YMM',
+              'Quantum Computing': 'QUBT',
+              'M-tron Industries': 'MPTI',
+              'GitLab': 'GTLB'}
+
 
 # Initial screen src
 stock_dict, sector = initial_screen.screen_stocks()
+print(stock_dict)
 # for stock in stock_dict.values():
 #     print(stock)
 
@@ -86,23 +98,23 @@ for stock in stock_dict.values():
     # Save images to system RAM
     for i, fig in enumerate(figs):
         buf = BytesIO()
-        if isinstance(fig, mplfig.Figure):
+        if isinstance(fig, go.Figure):
+            fig.write_image(buf, format='png')
+        elif isinstance(fig, mplfig.Figure):
             fig.savefig(buf, format='png')
-        elif isinstance(fig, go.Figure):
-            buf.seek(0)
         else:
             print("Unknown figure type:", type(fig))
             break
 
         buf.seek(0)
 
-        # Inset images and close excel writer
+        # Inset images
         worksheet.insert_image(row, 1, f"fig_{i}.png", {"image_data": buf})
-        writer.close()
 
         row += 25
-        break
+    # Close excel writer
+    writer.close()
 
-# Put charts into excel file
-# Option 1: Make one excel workbook per sector
-# Option 2: Make one excell workbook per stock
+#TODO Write to excel doc
+#TODO Check out Median pricer error
+#TODO Fix only writing Wix
