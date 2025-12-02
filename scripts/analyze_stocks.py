@@ -25,6 +25,9 @@ print(stock_dict)
 # for stock in stock_dict.values():
 #     print(stock)
 
+# Create a Pandas Excel writer using XlsxWriter as the engine.
+writer = pd.ExcelWriter(f"../outputs/{sector}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
+
 for stock in stock_dict.values():
     figs = []
 
@@ -34,7 +37,10 @@ for stock in stock_dict.values():
     years, quarters = get_financials.useful_variables(income_y, income_q)
 
     # financial_metrics src
-    price_targets = financial_metrics.get_investor_confidence(ticker=ticker)
+    try:
+        price_targets = financial_metrics.get_investor_confidence(ticker=ticker)
+    except KeyError:
+        price_targets = None
     ni_y = financial_metrics.get_net_income_y(ticker=ticker, income=income_y, ticks=years)
     figs.append(ni_y)
     ni_q = financial_metrics.get_net_income_q(ticker=ticker, income=income_q, ticks=quarters)
@@ -83,15 +89,16 @@ for stock in stock_dict.values():
     macd_indicators = technical_indicators.plot_macd_price_indicators(ticker=ticker, history=history1, m=macd_df)
     figs.append(macd_indicators)
     history_stoch, stoch_plot = technical_indicators.get_stoch_osc(ticker=ticker, history=history1)
-    figs.append(history_stoch)
+    figs.append(stoch_plot)
     stoch_indicator_plot = technical_indicators.plot_price_stoch(ticker=ticker, history=history_stoch)
     figs.append(stoch_indicator_plot)
 
-    # Create a Pandas Excel writer using XlsxWriter as the engine.
-    writer = pd.ExcelWriter(f"../outputs/{sector}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
-
     # Convert quick statistics to excel writer object
-    price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
+    if price_targets is not None:
+        price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
+    else:
+        print(f"No investor confidence data available for {ticker.info['symbol']}")
+
     worksheet = writer.sheets[f"{ticker.info['symbol']}"]
     # Starting row for images
     row = 20
@@ -113,8 +120,16 @@ for stock in stock_dict.values():
 
         row += 25
     # Close excel writer
-    writer.close()
 
-#TODO Write to excel doc
-#TODO Check out Median pricer error
-#TODO Fix only writing Wix
+writer.close()
+
+# Traceback (most recent call last):
+#   File "C:\Users\wooda\OneDrive\Documents\Coding\Data Analysis\stock-screener\scripts\analyze_stocks.py", line 53, in <module>
+#     roic = financial_metrics.get_roic(ticker=ticker, income=income_y, balance=balance_y, ticks=years)
+#   File "C:\Users\wooda\OneDrive\Documents\Coding\Data Analysis\stock-screener\src\financial_metrics.py", line 102, in get_roic
+#     balance['invested_capital'] = balance.LongTermDebt + balance.TotalEquityGrossMinorityInterest - balance.CashAndCashEquivalents
+#                                   ^^^^^^^^^^^^^^^^^^^^
+#   File "C:\Users\wooda\anaconda3\envs\stock-screener\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
+#     return object.__getattribute__(self, name)
+#            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+# AttributeError: 'DataFrame' object has no attribute 'LongTermDebt'
