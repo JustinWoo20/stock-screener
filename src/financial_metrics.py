@@ -1,4 +1,4 @@
-from get_financials import *
+# from get_financials import *
 import pandas as pd
 import plotly.express as px
 

@@ -1,3 +1,5 @@
+# TODO: Look at line 232 in financial_metrics for NXTT
+# TODO: Look at Yalla fcf
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
 import kaleido
@@ -98,8 +100,12 @@ for stock in stock_dict.values():
         price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
     else:
         print(f"No investor confidence data available for {ticker.info['symbol']}")
+        workbook = writer.book
+        worksheet = workbook.add_worksheet(f"{ticker.info['symbol']}")
+        writer.sheets[f"{ticker.info['symbol']}"] = worksheet
 
     worksheet = writer.sheets[f"{ticker.info['symbol']}"]
+
     # Starting row for images
     row = 20
     # Save images to system RAM
@@ -120,18 +126,6 @@ for stock in stock_dict.values():
 
         row += 25
     # Close excel writer
+    print(f"{ticker.info['symbol']} finished.")
 
 writer.close()
-
-# Traceback (most recent call last):
-#   File "C:\Users\wooda\OneDrive\Documents\Coding\Data Analysis\stock-screener\scripts\analyze_stocks.py", line 53, in <module>
-#     roic = financial_metrics.get_roic(ticker=ticker, income=income_y, balance=balance_y, ticks=years)
-#   File "C:\Users\wooda\OneDrive\Documents\Coding\Data Analysis\stock-screener\src\financial_metrics.py", line 102, in get_roic
-#     balance['invested_capital'] = balance.LongTermDebt + balance.TotalEquityGrossMinorityInterest - balance.CashAndCashEquivalents
-#                                   ^^^^^^^^^^^^^^^^^^^^
-#   File "C:\Users\wooda\anaconda3\envs\stock-screener\Lib\site-packages\pandas\core\generic.py", line 6321, in __getattr__
-#     return object.__getattribute__(self, name)
-#            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
-# AttributeError: 'DataFrame' object has no attribute 'LongTermDebt'
-
-# TODO: Check NXTT's balance sheet
