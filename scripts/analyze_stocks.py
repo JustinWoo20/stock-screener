@@ -1,5 +1,3 @@
-# TODO: Look at line 232 in financial_metrics for NXTT
-# TODO: Look at Yalla fcf
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
 import kaleido
@@ -23,7 +21,8 @@ debug_dict = {'Fair Isaac': 'FICO',
 
 # Initial screen src
 stock_dict, sector = initial_screen.screen_stocks()
-print(stock_dict)
+print(f"Stocks retreived: \n"
+      f"{stock_dict}")
 # for stock in stock_dict.values():
 #     print(stock)
 
@@ -42,7 +41,9 @@ for stock in stock_dict.values():
     try:
         price_targets = financial_metrics.get_investor_confidence(ticker=ticker)
     except KeyError:
-        price_targets = None
+        print(f"No investor confidence data available for {ticker.info['symbol']}")
+        print("Starting analysis of the next stock.")
+        continue
     ni_y = financial_metrics.get_net_income_y(ticker=ticker, income=income_y, ticks=years)
     figs.append(ni_y)
     ni_q = financial_metrics.get_net_income_q(ticker=ticker, income=income_q, ticks=quarters)
@@ -96,13 +97,7 @@ for stock in stock_dict.values():
     figs.append(stoch_indicator_plot)
 
     # Convert quick statistics to excel writer object
-    if price_targets is not None:
-        price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
-    else:
-        print(f"No investor confidence data available for {ticker.info['symbol']}")
-        workbook = writer.book
-        worksheet = workbook.add_worksheet(f"{ticker.info['symbol']}")
-        writer.sheets[f"{ticker.info['symbol']}"] = worksheet
+    price_targets.to_excel(writer, sheet_name=f"{ticker.info['symbol']}")
 
     worksheet = writer.sheets[f"{ticker.info['symbol']}"]
 

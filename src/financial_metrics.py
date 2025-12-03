@@ -123,14 +123,17 @@ def get_fcf_margin(ticker, income, cashflow, ticks):
 
 def get_fcf_margin_q(ticker, income, cashflow, ticks):
     # Graph yearly free cash flow margin
-    fcf_margin = cashflow['FreeCashFlow'] / income['TotalRevenue']
-    fcf_margin = fcf_margin.dropna()
+    try:
+        fcf_margin = cashflow['FreeCashFlow'] / income['TotalRevenue']
+        fcf_margin = fcf_margin.dropna()
 
-    fcf_margin_bar_q = px.bar(fcf_margin, x=fcf_margin.index, y=fcf_margin.values,
-                            title=f"{ticker.info['shortName']} Quarterly Free Cash Flow Margin", height=500)
-    fcf_margin_bar_q.update_layout(xaxis_title='Quarter', yaxis_title='Margin')
-    fcf_margin_bar_q.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
-    # fcf_margin_bar_q.show()
+        fcf_margin_bar_q = px.bar(fcf_margin, x=fcf_margin.index, y=fcf_margin.values,
+                                title=f"{ticker.info['shortName']} Quarterly Free Cash Flow Margin", height=500)
+        fcf_margin_bar_q.update_layout(xaxis_title='Quarter', yaxis_title='Margin')
+        fcf_margin_bar_q.update_xaxes(tickvals=fcf_margin.index, ticktext=ticks)
+        # fcf_margin_bar_q.show()
+    except KeyError:
+        fcf_margin_bar_q = None
     return fcf_margin_bar_q
 
 def get_oi_growth(ticker, income, ticks):
