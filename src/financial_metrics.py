@@ -1,4 +1,4 @@
-# from get_financials import *
+from get_financials import *
 import pandas as pd
 import plotly.express as px
 
@@ -99,7 +99,8 @@ def get_roic(ticker, income, balance, ticks):
     # Graph return on invested capital
     # Calculate NOPAT
     income['NOPAT'] = income.EBIT * (1 - income.TaxRateForCalcs)
-    balance['invested_capital'] = balance.LongTermDebt + balance.TotalEquityGrossMinorityInterest - balance.CashAndCashEquivalents
+    balance['invested_capital'] = (balance.TotalDebt + balance.StockholdersEquity -
+                                   balance.CashCashEquivalentsAndShortTermInvestments)
     roic = income.NOPAT / balance.invested_capital
     roic = roic.dropna()
     roic_bar = px.bar(roic, x=roic.index, y=roic.values, title=f"{ticker.info['shortName']} ROIC", height=500)

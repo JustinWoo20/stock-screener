@@ -133,3 +133,5 @@ writer.close()
 #     return object.__getattribute__(self, name)
 #            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
 # AttributeError: 'DataFrame' object has no attribute 'LongTermDebt'
+
+# TODO: Check NXTT's balance sheet
