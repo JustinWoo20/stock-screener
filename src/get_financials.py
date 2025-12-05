@@ -3,7 +3,7 @@ import yfinance as yf
 def get_ticker(stock_symbol):
     stock = yf.Ticker(stock_symbol)
     return stock
-# ticker = get_ticker("IHG")
+# ticker = get_ticker("GSHD")
 
 def financial_statements(ticker):
     income_yearly = ticker.get_income_stmt()
@@ -20,7 +20,7 @@ def financial_statements(ticker):
     cashflow_quarterly = cashflow_quarterly.transpose()
     return income_yearly, income_quarterly, balance_yearly, balance_quarterly, cashflow_yearly, cashflow_quarterly
 # income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q = financial_statements(ticker)
-# print(income_y.columns)
+# print(income_y)
 # print(income_q.columns)
 # print(balance_y.columns)
 # print(balance_q.columns)

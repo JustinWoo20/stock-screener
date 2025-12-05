@@ -9,8 +9,7 @@ import matplotlib.figure as mplfig
 import plotly.graph_objects as go
 from io import BytesIO
 
-sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical', 'Consumer Defensive',
-               'Energy', 'Financial Services', 'Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
+sector_list = ['Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
 debug_dict = {'InterContinental Hotels': 'IHG',
               'Meiwu Technology Company': 'WNW',
               'Mobileye Global': 'MBLY',

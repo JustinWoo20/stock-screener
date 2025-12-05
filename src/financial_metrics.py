@@ -99,15 +99,25 @@ def get_roic(ticker, income, balance, ticks):
     # Graph return on invested capital
     # Calculate NOPAT
     income['NOPAT'] = income.EBIT * (1 - income.TaxRateForCalcs)
-    balance['invested_capital'] = (balance.TotalDebt + balance.StockholdersEquity -
-                                   balance.CashCashEquivalentsAndShortTermInvestments)
-    roic = income.NOPAT / balance.invested_capital
-    roic = roic.dropna()
-    roic_bar = px.bar(roic, x=roic.index, y=roic.values, title=f"{ticker.info['shortName']} ROIC", height=500)
-    roic_bar.update_layout(xaxis_title='Date', yaxis_title='ROIC')
-    roic_bar.update_xaxes(tickvals=roic.index, ticktext=ticks)
-    # roic_bar.show()
-    return roic_bar
+    try:
+        balance['invested_capital'] = (balance.TotalDebt + balance.StockholdersEquity -
+                                       balance.CashCashEquivalentsAndShortTermInvestments)
+        roic = income.NOPAT / balance.invested_capital
+        roic = roic.dropna()
+        roic_bar = px.bar(roic, x=roic.index, y=roic.values, title=f"{ticker.info['shortName']} ROIC", height=500)
+        roic_bar.update_layout(xaxis_title='Date', yaxis_title='ROIC')
+        roic_bar.update_xaxes(tickvals=roic.index, ticktext=ticks)
+        # roic_bar.show()
+        return roic_bar
+    except AttributeError:
+        # Use yahoo finance's number
+        roic = income.NOPAT / balance.InvestedCapital
+        roic = roic.dropna()
+        roic_bar = px.bar(roic, x=roic.index, y=roic.values, title=f"{ticker.info['shortName']} ROIC", height=500)
+        roic_bar.update_layout(xaxis_title='Date', yaxis_title='ROIC')
+        roic_bar.update_xaxes(tickvals=roic.index, ticktext=ticks)
+        # roic_bar.show()
+        return roic_bar
 
 def get_fcf_margin(ticker, income, cashflow, ticks):
     # Graph yearly free cash flow margin
@@ -140,38 +150,60 @@ def get_oi_growth(ticker, income, ticks):
     # Graph Operating Income Growth for the previous 3 years
     loop = 1
     oig_list = []
-    for oi in income.OperatingIncome.values:
-        previous_oi = oi
-        if loop >= 2:
-            oig = (current_oi - previous_oi) / abs(previous_oi)
-            oig_list.append(oig)
-        loop += 1
-        current_oi = oi
-    # Create operating income growth dataframe
-    oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
+    try:
+        # Use operating income
+        for oi in income.OperatingIncome.values:
+            previous_oi = oi
+            if loop >= 2:
+                oig = (current_oi - previous_oi) / abs(previous_oi)
+                oig_list.append(oig)
+            loop += 1
+            current_oi = oi
 
-    oig_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
-                     title=f"{ticker.info['shortName']} Yearly Operating Income Growth",
-                     height=500)
-    oig_bar.update_layout(xaxis_title='Date')
-    oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
-    # oig_bar.show()
-    return oig_bar
+    except AttributeError:
+        # For finance sectors will more than likely need to use pretax income
+        for oi in income.PretaxIncome.values:
+            previous_oi = oi
+            if loop >= 2:
+                oig = (current_oi - previous_oi) / abs(previous_oi)
+                oig_list.append(oig)
+            loop += 1
+            current_oi = oi
+
+        # Create operating income growth dataframe
+        oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
+
+        oig_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
+                         title=f"{ticker.info['shortName']} Yearly Operating Income Growth",
+                         height=500)
+        oig_bar.update_layout(xaxis_title='Date')
+        oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
+        # oig_bar.show()
+        return oig_bar
 
 def get_oi_q_growth(ticker, income, ticks):
     # Graph Quarterly Operating Income Growth
     loop = 1
     oig_list = []
-    for oi in income.OperatingIncome.values:
-        previous_oi = oi
-        if loop >= 2:
-            oig = (current_oi - previous_oi) / abs(previous_oi)
-            oig_list.append(oig)
-        loop += 1
-        current_oi = oi
-    # Create quarterly operating income growth dataframe
+    try:
+        for oi in income.OperatingIncome.values:
+            previous_oi = oi
+            if loop >= 2:
+                oig = (current_oi - previous_oi) / abs(previous_oi)
+                oig_list.append(oig)
+            loop += 1
+            current_oi = oi
+    except AttributeError:
+        for oi in income.PretaxIncome.values:
+            previous_oi = oi
+            if loop >= 2:
+                oig = (current_oi - previous_oi) / abs(previous_oi)
+                oig_list.append(oig)
+            loop += 1
+            current_oi = oi
+
+    # Create quarterly operating income growth dataframe and drop null values
     oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
-    # Drop null values
     oig = oig.dropna()
 
     oig_q_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
@@ -184,7 +216,10 @@ def get_oi_q_growth(ticker, income, ticks):
 
 def get_operating_margin(ticker, income, ticks):
     # Graph yearly operating margin
-    om = (income.OperatingIncome / income.TotalRevenue) * 100
+    try:
+        om = (income.OperatingIncome / income.TotalRevenue) * 100
+    except AttributeError:
+        om = (income.PretaxIncome / income.TotalRevenue) * 100
 
     om_bar = px.bar(om, x=om.index, y=om.values, title=f"{ticker.info['shortName']} Yearly Operating Margin",
                    height=500)
@@ -216,7 +251,10 @@ def get_om_trend(ticker, om_data, ticks):
 
 def get_operating_margin_q(ticker, income, ticks):
     # Graph yearly operating margin
-    om_q = (income.OperatingIncome / income.TotalRevenue) * 100
+    try:
+        om_q = (income.OperatingIncome / income.TotalRevenue) * 100
+    except AttributeError:
+        om_q = (income.PretaxIncome) / income.TotalRevenue * 100
     om_q = om_q.dropna()
     om_bar_q = px.bar(om_q, x=om_q.index, y=om_q.values, title=f"{ticker.info['shortName']} Quarterly Operating Margin",
                    height=500)
