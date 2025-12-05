@@ -1,6 +1,9 @@
+# TODO: Run through sector list and make sure no bugs
+# TODO: Write requirements text
+# TODO: Write README
+
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
-import kaleido
 import pandas as pd
 import matplotlib.figure as mplfig
 import plotly.graph_objects as go
@@ -8,23 +11,15 @@ from io import BytesIO
 
 sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical', 'Consumer Defensive',
                'Energy', 'Financial Services', 'Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
-debug_dict = {'Fair Isaac': 'FICO',
-              'Wix.com': 'WIX',
-              'Next Technology Holding': 'NXTT',
-              'Electro-Sensors': 'ELSE',
-              'Tuya': 'TUYA', 'Yalla': 'YALA',
-              'Full Truck Alliance': 'YMM',
-              'Quantum Computing': 'QUBT',
-              'M-tron Industries': 'MPTI',
-              'GitLab': 'GTLB'}
-
+debug_dict = {'InterContinental Hotels': 'IHG',
+              'Meiwu Technology Company': 'WNW',
+              'Mobileye Global': 'MBLY',
+              'Legacy Housing': 'LEGH'}
 
 # Initial screen src
 stock_dict, sector = initial_screen.screen_stocks()
-print(f"Stocks retreived: \n"
+print(f"Stocks retrieved: \n"
       f"{stock_dict}")
-# for stock in stock_dict.values():
-#     print(stock)
 
 # Create a Pandas Excel writer using XlsxWriter as the engine.
 writer = pd.ExcelWriter(f"../outputs/{sector}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
@@ -35,6 +30,28 @@ for stock in stock_dict.values():
     # get_financials src
     ticker = get_financials.get_ticker(stock)
     income_y, income_q, balance_y, balance_q, cashflow_y, cashflow_q = get_financials.financial_statements(ticker)
+
+    # Check and report what's missing
+    missing = []
+    if income_y.empty:
+        missing.append("income_y")
+    if income_q.empty:
+        missing.append("income_q")
+    if balance_y.empty:
+        missing.append("balance_y")
+    if balance_q.empty:
+        missing.append("balance_q")
+    if cashflow_y.empty:
+        missing.append("cashflow_y")
+    if cashflow_q.empty:
+        missing.append("cashflow_q")
+
+    if missing:
+        print(f"Skipping {ticker.info['symbol']}: Missing {', '.join(missing)}")
+        print(f"Starting analysis of next stock.")
+        continue
+
+    # Obtain x-axis labels for charts
     years, quarters = get_financials.useful_variables(income_y, income_q)
 
     # financial_metrics src
@@ -44,28 +61,35 @@ for stock in stock_dict.values():
         print(f"No investor confidence data available for {ticker.info['symbol']}")
         print("Starting analysis of the next stock.")
         continue
+    # Net Income
     ni_y = financial_metrics.get_net_income_y(ticker=ticker, income=income_y, ticks=years)
     figs.append(ni_y)
     ni_q = financial_metrics.get_net_income_q(ticker=ticker, income=income_q, ticks=quarters)
     figs.append(ni_q)
+    # Shareholder Equity
     se_y = financial_metrics.get_shareholder_equity(ticker=ticker, income=income_y, balance=balance_y, ticks=years)
     figs.append(se_y)
     se_q = financial_metrics.get_shareholder_equity_q(ticker=ticker, balance=balance_q, ticks=quarters)
     figs.append(se_q)
+    # Cashflow
     cf_y = financial_metrics.get_cash_flow(ticker=ticker, cashflow=cashflow_y, ticks=years)
     figs.append(cf_y)
     cf_q = financial_metrics.get_cashflow_q(ticker=ticker, cashflow=cashflow_q, ticks=quarters)
     figs.append(cf_q)
+    # Return on Invested Capital
     roic = financial_metrics.get_roic(ticker=ticker, income=income_y, balance=balance_y, ticks=years)
     figs.append(roic)
+    # Free cash flow margin
     fcf_margin_y = financial_metrics.get_fcf_margin(ticker=ticker, income=income_y, cashflow=cashflow_y, ticks=years)
     figs.append(fcf_margin_y)
     fcf_margin_q = financial_metrics.get_fcf_margin_q(ticker=ticker, income=income_q, cashflow=cashflow_q, ticks=quarters)
     figs.append(fcf_margin_q)
+    # Operating income growth
     oi_growth_y = financial_metrics.get_oi_growth(ticker=ticker, income=income_y, ticks=years)
     figs.append(oi_growth_y)
     oi_growth_q = financial_metrics.get_oi_q_growth(ticker=ticker, income=income_q, ticks=quarters)
     figs.append(oi_growth_q)
+    # Operating margin
     om, om_graph = financial_metrics.get_operating_margin(ticker=ticker, income=income_y, ticks=years)
     figs.append(om_graph)
     omt_y = financial_metrics.get_om_trend(ticker=ticker, om_data=om, ticks=years)
@@ -74,6 +98,7 @@ for stock in stock_dict.values():
     figs.append(om_q_graph)
     omt_q = financial_metrics.get_om_q_trend(ticker=ticker, om_data=om_q, ticks=quarters)
     figs.append(omt_q)
+    # Gross margin
     gm = financial_metrics.get_gross_margin(ticker=ticker, income=income_y, ticks=years)
     figs.append(gm)
     gm_q = financial_metrics.get_gross_q_margin(ticker=ticker, income=income_q, ticks=quarters)

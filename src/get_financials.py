@@ -3,7 +3,7 @@ import yfinance as yf
 def get_ticker(stock_symbol):
     stock = yf.Ticker(stock_symbol)
     return stock
-# ticker = get_ticker("YMM")
+# ticker = get_ticker("IHG")
 
 def financial_statements(ticker):
     income_yearly = ticker.get_income_stmt()

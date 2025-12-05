@@ -248,25 +248,31 @@ def get_om_q_trend(ticker, om_data, ticks):
 
 def get_gross_margin(ticker, income, ticks):
     #Graph yearly gross margin
-    income['Gross Margin'] = income.GrossProfit / income.TotalRevenue
+    try:
+        income['Gross Margin'] = income.GrossProfit / income.TotalRevenue
 
-    grossmargin_bar = px.bar(income, x=income.index, y='Gross Margin',
-                             title=f"{ticker.info['shortName']} Yearly Gross Margin",
-                             height=500)
-    grossmargin_bar.update_layout(xaxis_title='Date')
-    grossmargin_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    # grossmargin_bar.show()
-    return grossmargin_bar
+        grossmargin_bar = px.bar(income, x=income.index, y='Gross Margin',
+                                 title=f"{ticker.info['shortName']} Yearly Gross Margin",
+                                 height=500)
+        grossmargin_bar.update_layout(xaxis_title='Date')
+        grossmargin_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+        # grossmargin_bar.show()
+        return grossmargin_bar
+    except AttributeError:
+        return None
 
 def get_gross_q_margin(ticker, income, ticks):
     #Graph quarterly gross margin
-    gross_margin = income.GrossProfit / income.TotalRevenue
-    gross_margin = gross_margin.dropna()
+    try:
+        gross_margin = income.GrossProfit / income.TotalRevenue
+        gross_margin = gross_margin.dropna()
 
-    grossmargin_q_bar = px.bar(gross_margin, x=gross_margin.index, y=gross_margin.values,
-                               title=f"{ticker.info['shortName']} Quarterly Gross Margin",
-                             height=500)
-    grossmargin_q_bar.update_layout(xaxis_title='Quarter', yaxis_title='Gross Margin')
-    grossmargin_q_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
-    # grossmargin_q_bar.show()
-    return grossmargin_q_bar
+        grossmargin_q_bar = px.bar(gross_margin, x=gross_margin.index, y=gross_margin.values,
+                                   title=f"{ticker.info['shortName']} Quarterly Gross Margin",
+                                 height=500)
+        grossmargin_q_bar.update_layout(xaxis_title='Quarter', yaxis_title='Gross Margin')
+        grossmargin_q_bar.update_xaxes(tickvals=income.index, ticktext=ticks)
+        # grossmargin_q_bar.show()
+        return grossmargin_q_bar
+    except AttributeError:
+        return None
