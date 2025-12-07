@@ -1,4 +1,3 @@
-# TODO: Run through sector list and make sure no bugs
 # TODO: Write requirements text
 # TODO: Write README
 
@@ -9,7 +8,6 @@ import matplotlib.figure as mplfig
 import plotly.graph_objects as go
 from io import BytesIO
 
-sector_list = ['Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
 debug_dict = {}
 
 # Initial screen src
@@ -140,7 +138,7 @@ for stock in stock_dict.values():
         # Inset images
         worksheet.insert_image(row, 1, f"fig_{i}.png", {"image_data": buf})
 
-        row += 25
+        row += 35
     # Close excel writer
     print(f"{ticker.info['symbol']} finished.")
 

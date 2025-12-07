@@ -13,7 +13,7 @@ sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical',
 def screen_stocks():
     #Initial screen to find possible undervalued stocks
     target_sector = input("Enter the sector you are looking for from one of the following options: \n"
-                          f"{sector_list}: \n").title()
+                          f"{', '.join(sector_list)}: \n").title()
 
     tech_query = yf.EquityQuery('and', [
     yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
