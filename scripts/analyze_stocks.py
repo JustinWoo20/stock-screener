@@ -10,10 +10,7 @@ import plotly.graph_objects as go
 from io import BytesIO
 
 sector_list = ['Healthcare', 'Industrials', 'Real Estate', 'Technology', 'Utilities']
-debug_dict = {'InterContinental Hotels': 'IHG',
-              'Meiwu Technology Company': 'WNW',
-              'Mobileye Global': 'MBLY',
-              'Legacy Housing': 'LEGH'}
+debug_dict = {}
 
 # Initial screen src
 stock_dict, sector = initial_screen.screen_stocks()

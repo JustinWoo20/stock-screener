@@ -170,16 +170,17 @@ def get_oi_growth(ticker, income, ticks):
             loop += 1
             current_oi = oi
 
-        # Create operating income growth dataframe
-        oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
+    # Create operating income growth dataframe
+    oig = pd.DataFrame({'Operating Income Growth': oig_list}, index=income.index[:len(oig_list)])
 
-        oig_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
-                         title=f"{ticker.info['shortName']} Yearly Operating Income Growth",
-                         height=500)
-        oig_bar.update_layout(xaxis_title='Date')
-        oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
-        # oig_bar.show()
-        return oig_bar
+    oig_bar = px.bar(oig, x=oig.index, y='Operating Income Growth',
+                    title=f"{ticker.info['shortName']} Yearly Operating Income Growth",
+                    height=500)
+    oig_bar.update_layout(xaxis_title='Date')
+    oig_bar.update_xaxes(tickvals=oig.index, ticktext=ticks)
+    # oig_bar.show()
+
+    return oig_bar
 
 def get_oi_q_growth(ticker, income, ticks):
     # Graph Quarterly Operating Income Growth
@@ -254,7 +255,7 @@ def get_operating_margin_q(ticker, income, ticks):
     try:
         om_q = (income.OperatingIncome / income.TotalRevenue) * 100
     except AttributeError:
-        om_q = (income.PretaxIncome) / income.TotalRevenue * 100
+        om_q = (income.PretaxIncome / income.TotalRevenue) * 100
     om_q = om_q.dropna()
     om_bar_q = px.bar(om_q, x=om_q.index, y=om_q.values, title=f"{ticker.info['shortName']} Quarterly Operating Margin",
                    height=500)
