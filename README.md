@@ -58,6 +58,9 @@ stock-screener
 │   ├── oversold-tech-stocks.ipynb
 │   └── wix.ipynb
 ├── outputs # Example outputs
+│   ├── ex_images/
+│   │   ├── FICO_RSI.png
+│   │   └── WIX_netIncome.png
 │   ├── Communication Services_2025-12-07.xlsx  
 │   ├── Healthcare_2025-12-07.xlsx
 │   └── Technology_2025-12-07.xlsx
