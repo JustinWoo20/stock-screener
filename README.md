@@ -97,12 +97,18 @@ macOS/Linux ```source .venv/bin/activate```
 
 4. Install dependencies
 ```pip install -r requirements.txt```
----
 
 5. Run the screener
 ```python scripts/analyze_stocks.py```
 
 6. Select target sector when prompted
+
+---
+
+## 📷 Example Outputs
+![FICO RSI plot with price plot](outputs/ex_images/FICO_RSI.png)
+
+![WIX Yearly and Quarterly Net Income](outputs/ex_images/WIX_netIncome.png)
 
 ---
 ## 📌 Future Improvements
