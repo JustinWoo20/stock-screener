@@ -1,6 +1,6 @@
 # 🚀 Unvdervalued Stock Screener 📈
 
-A python based stock screener designed to indentify potentially undervalued companies
+A python based stock screener designed to identify potentially undervalued companies
 with strong financial fundamentals. It combines fundamental analysis, sector benchmarking,
 and technical indicators to provide a deeper view of a stock's financial health. Both yearly and quarterly
 data is used to ensure there are no recent issues that yearly data may not capture.
