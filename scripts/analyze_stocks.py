@@ -1,5 +1,3 @@
-# TODO: Write README
-
 import datetime
 from src import initial_screen, get_financials, financial_metrics, technical_indicators
 import pandas as pd
