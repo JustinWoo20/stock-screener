@@ -1,4 +1,3 @@
-# TODO: Write requirements text
 # TODO: Write README
 
 import datetime
