@@ -1,0 +1,12 @@
+.img-container {
+    max-width: 75vw;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.stock-img {
+    height: 50vh;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
