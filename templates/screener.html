@@ -23,6 +23,29 @@
         <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 400px; height: 100vh;">
             <h2 class="screener-header">Screener</h2>
             <hr>
+            <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-280px" data-bs-theme="light" id="dropdown">
+                <form class="p-2 mb-2 bg-body-tertiary border-bottom">
+                    <input type="search" class="form-control" autocomplete="false" placeholder="Type to filter...">
+                </form>
+                <ul class="list-unstyled mb-0">
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                           href="{{ url_for('add_parameter', param='action') }}">Action</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                           href="{{ url_for('add_parameter', param='action') }}">Another action</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                           href="{{ url_for('add_parameter', param='action') }}">Something else here</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                           href="{{ url_for('add_parameter', param='action') }}">Separated link</a>
+                    </li>
+                </ul>
+            </div>
             <p class="add">Add Criteria</p>
             <button class="btn btn-light align-items-center" type="button" style="text-align: center">
                 +
