@@ -28,22 +28,12 @@
                     <input type="search" class="form-control" autocomplete="false" placeholder="Type to filter...">
                 </form>
                 <ul class="list-unstyled mb-0">
+                    {% for item in screener_field.keys() %}
                     <li>
                         <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                           href="{{ url_for('add_parameter', param='action') }}">Action</a>
+                           href="">{{ item }}</a>
                     </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                           href="{{ url_for('add_parameter', param='action') }}">Another action</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                           href="{{ url_for('add_parameter', param='action') }}">Something else here</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                           href="{{ url_for('add_parameter', param='action') }}">Separated link</a>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
             <p class="add">Add Criteria</p>
