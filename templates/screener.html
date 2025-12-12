@@ -20,27 +20,36 @@
         </header>
     </div>
     <div class="main-container">
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 400px; height: 100vh;">
+
+
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 400px; height: 100vh;", id="sidebar">
             <h2 class="screener-header">Screener</h2>
             <hr>
-            <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-280px" data-bs-theme="light" id="dropdown">
+            <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-280px"
+                 data-bs-theme="light" id="dropdown1", >
                 <form class="p-2 mb-2 bg-body-tertiary border-bottom">
                     <input type="search" class="form-control" autocomplete="false" placeholder="Type to filter...">
                 </form>
-                <ul class="list-unstyled mb-0">
-                    {% for item in screener_field.keys() %}
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                           href="">{{ item }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
+                <button type="button" class="btn btn-success dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">Type
+                    <ul class="dropdown-menu mb-0">
+                        {% for item in screener_field.keys() %}
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2"
+                               href="">{{ item }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </button>
+
             </div>
             <p class="add">Add Criteria</p>
             <button class="btn btn-light align-items-center" type="button" style="text-align: center">
                 +
             </button>
         </div>
+
+
         <img src="{{ url_for('static', filename='stocks.jpg') }}" class="stock-img" alt="Stock chart image">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
