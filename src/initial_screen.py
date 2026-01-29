@@ -3,7 +3,7 @@ import pandas as pd
 
 # Import sector data for comparison
 sector_data = pd.read_csv('../data/sector_averages.csv', index_col=0)
-cols = ['P/B', 'D/E', 'Y/Y Revenue Growth (S&P)', 'Gross Profit Margin']
+cols = ['P/B', 'D/E', 'Y/Y Revenue Growth (S&P)', 'Gross Profit Margin', 'Trailing P/E', 'Forward P/E',]
 sector_data[cols] = sector_data[cols].apply(pd.to_numeric, errors='coerce')
 
 sector_list = ['Basic Materials', 'Communication Services', 'Consumer Cyclical', 'Consumer Defensive',
@@ -15,7 +15,7 @@ def screen_stocks():
     target_sector = input("Enter the sector you are looking for from one of the following options: \n"
                           f"{', '.join(sector_list)}: \n").title()
 
-    tech_query = yf.EquityQuery('and', [
+    query = yf.EquityQuery('and', [
     yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
     yf.EquityQuery('is-in', ['sector', f"{target_sector}"]),
     yf.EquityQuery('LT', ['pricebookratio.quarterly', sector_data.loc[f"{target_sector}", 'P/B']]),
@@ -27,7 +27,7 @@ def screen_stocks():
                   ])
 
     # Create a list of stock tickers from screened stocks
-    response = yf.screen(tech_query, sortField='pricebookratio.quarterly', sortAsc=True, size=100)
+    response = yf.screen(query, sortField='pricebookratio.quarterly', sortAsc=True, size=100)
     print(f'Number of stocks retrieved: {response['total']}')
     data = response['quotes']
     try:
