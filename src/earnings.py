@@ -1,13 +1,6 @@
-# Work into main analyze stocks script
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import plotly.io as pio
-pio.renderers.default = 'browser'
-import yfinance as yf
-from src import initial_screen
-
-ticker = yf.Ticker('FICO')
 
 def get_actual_hist_eps(ticker):
     historic = ticker.get_earnings_history()
@@ -34,8 +27,6 @@ def get_hist_forward_eps(ticker, eps_previous):
     # Clean up eps_estimate column data
     eps_estimate.loc[0, 'quarter'] = '2026Q1'
     eps_estimate.loc[1, 'quarter'] = '2026Q2'
-    # Combine historical and estimates
-    # eps_combined = pd.concat([eps, eps_estimate], ignore_index=True)
 
     # Plot data
     eps_bar = go.Figure()
@@ -48,6 +39,7 @@ def get_hist_forward_eps(ticker, eps_previous):
     return eps_bar
 
 def get_eps_trends(ticker):
+    # Shows whether analysts have been raising their predictions for the next quarter and year or lowering them
     trends = ticker.get_eps_trend()
     trends_tran = trends.transpose()
     trends_tran = trends_tran.rename(columns={'0q': 'Current Quarter',
@@ -64,26 +56,3 @@ def get_eps_trends(ticker):
                         height=500, title=f'Analysts predicted yearly eps trends for {ticker.info['shortName']}')
 
     return quarter_line, year_line
-
-def get_year_eps(ticker):
-    info = ticker.info
-    try:
-        trailing_eps = info['trailingEps']
-        print(f'Trailing EPS: {trailing_eps}')
-    except KeyError:
-        trailing_eps= info['epsTrailingTwelveMonths']
-        print(f'Trailing EPS: {trailing_eps}')
-    eps_current_year = info['epsCurrentYear']
-    print(f'Current year predicted eps: {eps_current_year}')
-    forward_eps = info['forwardEps']
-    print(f'Forward eps: {forward_eps}')
-    return trailing_eps, eps_current_year, forward_eps
-
-def compare_pe(ticker):
-    info = ticker.info
-    trailing_pe = info['trailingPE']
-    print(f'Trailing P/E: {trailing_pe}')
-    forward_pe = info['forwardPE']
-    print(f'Forward P/E: {forward_pe}')
-
-compare_pe(ticker=ticker)

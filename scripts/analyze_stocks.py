@@ -1,5 +1,5 @@
 import datetime
-from src import initial_screen, get_financials, financial_metrics, technical_indicators
+from src import initial_screen, get_financials, financial_metrics, technical_indicators, earnings
 import pandas as pd
 import matplotlib.figure as mplfig
 import plotly.graph_objects as go
@@ -52,6 +52,22 @@ for stock in stock_dict.values():
         print(f"No investor confidence data available for {ticker.info['symbol']}")
         print("Starting analysis of the next stock.")
         continue
+
+    # sector P/E stats
+    sector_trailing_pe = initial_screen.sector_data.loc[sector, 'Trailing P/E']
+    sector_forward_pe = initial_screen.sector_data.loc[sector, 'Forward P/E']
+    pe_dict = {'sector_trailing_pe': sector_trailing_pe, 'sector_forward_pe': sector_forward_pe}
+    df_pe = pd.DataFrame.from_dict(data=pe_dict, orient='index', columns=['Quick Stats'])
+    price_targets = pd.concat([price_targets, df_pe])
+
+    # eps
+    df_eps, eps_bar = earnings.get_actual_hist_eps(ticker=ticker)
+    figs.append(eps_bar)
+    forward_eps_plot = earnings.get_hist_forward_eps(ticker=ticker, eps_previous=df_eps)
+    figs.append(forward_eps_plot)
+    quarter_plot, year_plot = earnings.get_eps_trends(ticker)
+    figs.append(quarter_plot)
+    figs.append(year_plot)
     # Net Income
     ni_y = financial_metrics.get_net_income_y(ticker=ticker, income=income_y, ticks=years)
     figs.append(ni_y)
@@ -118,7 +134,7 @@ for stock in stock_dict.values():
     worksheet = writer.sheets[f"{ticker.info['symbol']}"]
 
     # Starting row for images
-    row = 20
+    row = 25
     # Save images to system RAM
     for i, fig in enumerate(figs):
         buf = BytesIO()
@@ -135,7 +151,7 @@ for stock in stock_dict.values():
         # Inset images
         worksheet.insert_image(row, 1, f"fig_{i}.png", {"image_data": buf})
 
-        row += 35
+        row += 30
     # Close excel writer
     print(f"{ticker.info['symbol']} finished.")
 

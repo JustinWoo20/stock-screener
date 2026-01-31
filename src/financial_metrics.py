@@ -1,12 +1,13 @@
-# from get_financials import *
 import pandas as pd
 import plotly.express as px
+
 
 def get_investor_confidence(ticker):
     # Obtain price targets based on analyst estimates
     analyst = ticker.analyst_price_targets
     holders = ticker.major_holders
     insider_purchases = ticker.insider_purchases
+    info = ticker.info
 
     insiderPercentHeld = round(holders.loc['insidersPercentHeld', 'Value'] * 100, 4)
     institutionsPercentHeld = round(holders.loc['institutionsPercentHeld', 'Value'] * 100, 4)
@@ -17,6 +18,15 @@ def get_investor_confidence(ticker):
     sold_shares = insider_purchases.loc[1, 'Shares']
     sold_transactions = insider_purchases.loc[1, 'Trans']
     net_purchased = insider_purchases.loc[2, 'Shares']
+    try:
+        trailing_eps = info['trailingEps']
+    except KeyError:
+        trailing_eps= info['epsTrailingTwelveMonths']
+    eps_current_year = info['epsCurrentYear']
+    forward_eps = info['forwardEps']
+    trailing_pe = info['trailingPE']
+    forward_pe = info['forwardPE']
+
     # Add evertying to a single dictionary
     analyst['upside_potential'] = upside_potential
     analyst['risk_adjusted'] = risk_adjusted
@@ -27,6 +37,12 @@ def get_investor_confidence(ticker):
     analyst['soldShares'] = sold_shares
     analyst['soldTransactions'] = sold_transactions
     analyst['netPurchases'] = net_purchased
+    analyst['trailing_eps'] = trailing_eps
+    analyst['eps_current_year'] = eps_current_year
+    analyst['forward_eps'] = forward_eps
+    analyst['trailing_pe'] = trailing_pe
+    analyst['forward_pe'] = forward_pe
+
     # Covnert to a dataframe
     price_targets = pd.DataFrame.from_dict(data=analyst, orient='index', columns=['Quick Stats'] )
     return price_targets
