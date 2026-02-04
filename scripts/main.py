@@ -49,7 +49,7 @@ for stock in stock_dict.values():
     try:
         price_targets = financial_metrics.get_investor_confidence(ticker=ticker)
     except KeyError:
-        print(f"No investor confidence data available for {ticker.info['symbol']}")
+        print(f"Missing data for {ticker.info['symbol']}")
         print("Starting analysis of the next stock.")
         continue
 

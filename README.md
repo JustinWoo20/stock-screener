@@ -65,7 +65,7 @@ stock-screener
 │   ├── Healthcare_2025-12-07.xlsx
 │   └── Technology_2025-12-07.xlsx
 ├── scripts # Contains main script for analysis
-│   └── analyze_stocks.py
+│   └── main.py
 ├── src # Source scripts for screening and analysis
 │   ├── financial_metrics.py
 │   ├── get_financials.py
@@ -102,7 +102,7 @@ macOS/Linux ```source .venv/bin/activate```
 ```pip install -r requirements.txt```
 
 5. Run the screener
-```python scripts/analyze_stocks.py```
+```python scripts/main.py```
 
 6. Select target sector when prompted
 
