@@ -43,7 +43,7 @@ def get_investor_confidence(ticker):
     analyst['trailing_pe'] = trailing_pe
     analyst['forward_pe'] = forward_pe
 
-    # Covnert to a dataframe
+    # Convert to a dataframe
     price_targets = pd.DataFrame.from_dict(data=analyst, orient='index', columns=['Quick Stats'] )
     return price_targets
 
