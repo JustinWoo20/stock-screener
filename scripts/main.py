@@ -1,5 +1,5 @@
 import datetime
-from src import initial_screen, get_financials, financial_metrics, technical_indicators, earnings
+from src.screening import initial_screen, get_financials, financial_metrics, technical_indicators, earnings
 import pandas as pd
 import matplotlib.figure as mplfig
 import plotly.graph_objects as go
