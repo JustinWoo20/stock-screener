@@ -10,7 +10,7 @@ for industry in industries.values():
     for i in industry:
         industry_list.append(i)
 
-with open('../../data/blank_templates/sector_labels.csv', 'w', newline='') as csvfile:
+with open('../../data/blank_templates/sector_labels_test.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(file_header)
     for item in industry_list:
