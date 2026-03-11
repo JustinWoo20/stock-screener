@@ -97,7 +97,7 @@ def get_names(ticker):
 
 rows_to_add = []
 
-with open('../../data/blank_templates/industry_labels.csv') as csvfile:
+with open('../../data/blank_templates/industry_labels.csv', encoding='utf-8') as csvfile:
     reader = csv.reader(csvfile)
     header = next(reader)
     rows = list(reader)
@@ -127,7 +127,7 @@ with open('../../data/blank_templates/industry_labels.csv') as csvfile:
         rows_to_add.append([ind] + averages)
         time.sleep(1) # Prevent errors with yahoo finance
 
-with open('../../data/industry_averages.csv', 'w', newline='') as outfile:
+with open('../../data/industry_averages.csv', 'w', newline='', encoding='utf-8') as outfile:
     writer = csv.writer(outfile)
     writer.writerow(header)
     for r in rows_to_add:

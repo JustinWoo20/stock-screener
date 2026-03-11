@@ -9,7 +9,7 @@ for industry in industries.values():
     for i in industry:
         industry_list.append(i)
 
-with open('../../data/blank_templates/industry_labels.csv', 'w', newline='') as csvfile:
+with open('../../data/blank_templates/industry_labels.csv', 'w', newline='', encoding='utf-8') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(file_header)
     for item in industry_list:
