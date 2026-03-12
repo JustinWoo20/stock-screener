@@ -5,8 +5,6 @@ import matplotlib.figure as mplfig
 import plotly.graph_objects as go
 from io import BytesIO
 
-debug_dict = {}
-
 # Initial screen src
 stock_dict, sector = initial_screen.screen_stocks()
 print(f"Stocks retrieved: \n"
