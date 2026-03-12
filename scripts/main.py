@@ -6,12 +6,13 @@ import plotly.graph_objects as go
 from io import BytesIO
 
 # Initial screen src
-stock_dict, sector = initial_screen.screen_stocks()
+avg, target = initial_screen.choose_category()
+stock_dict, user_choice = initial_screen.screen_stocks(averages=avg, ind_sec=target)
 print(f"Stocks retrieved: \n"
       f"{stock_dict}")
 
 # Create a Pandas Excel writer using XlsxWriter as the engine.
-writer = pd.ExcelWriter(f"../outputs/{sector}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
+writer = pd.ExcelWriter(f"../outputs/{user_choice}_{datetime.date.today()}.xlsx", engine='xlsxwriter')
 
 for stock in stock_dict.values():
     figs = []
@@ -52,8 +53,8 @@ for stock in stock_dict.values():
         continue
 
     # sector P/E stats
-    sector_trailing_pe = initial_screen.sector_data.loc[sector, 'Trailing P/E']
-    sector_forward_pe = initial_screen.sector_data.loc[sector, 'Forward P/E']
+    sector_trailing_pe = avg.loc[f"{user_choice}", 'Trailing P/E']
+    sector_forward_pe = avg.loc[f"{user_choice}", 'Forward P/E']
     pe_dict = {'sector_trailing_pe': sector_trailing_pe, 'sector_forward_pe': sector_forward_pe}
     df_pe = pd.DataFrame.from_dict(data=pe_dict, orient='index', columns=['Quick Stats'])
     price_targets = pd.concat([price_targets, df_pe])

@@ -6,9 +6,9 @@ def choose_category():
     category = input('Would you like to screen by sector or industry?\n'
                      'Please type "Sector" or "Industry"\n').title()
     if category == 'Sector':
-        data = pd.read_csv('../../data/sector_averages.csv', index_col=0)
+        data = pd.read_csv('../data/sector_averages.csv', index_col=0)
     elif category == 'Industry':
-        data = pd.read_csv('../../data/industry_averages.csv', index_col=0)
+        data = pd.read_csv('../data/industry_averages.csv', index_col=0)
     else:
         print('Please enter a valid input')
         return None
@@ -21,30 +21,22 @@ def screen_stocks(averages, ind_sec):
     #Initial screen to find possible undervalued stocks
     if ind_sec == 'Sector':
         target = input("Enter your target sector: \n").title()
-        query = yf.EquityQuery('and', [
-            yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
-            yf.EquityQuery('is-in', ['sector', f"{target}"]),
-            yf.EquityQuery('LT', ['pricebookratio.quarterly', averages.loc[f"{target}", 'P/B']]),
-            yf.EquityQuery('LT', ['totaldebtequity.lasttwelvemonths', averages.loc[f"{target}", 'D/E']]),
-            yf.EquityQuery('GTE', ['totalrevenues1yrgrowth.lasttwelvemonths',
-                                   averages.loc[f"{target}", 'Y/Y Revenue Growth']]),
-            yf.EquityQuery('GTE', ['grossprofitmargin.lasttwelvemonths',
-                                   averages.loc[f"{target}", 'Gross Profit Margin']]),
-            yf.EquityQuery('GTE', ['altmanzscoreusingtheaveragestockinformationforaperiod.lasttwelvemonths', 2.8]),
-        ])
+
     elif ind_sec == 'Industry':
         target = input('Enter your target industry: \n')
-        query = yf.EquityQuery('and', [
-            yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
-            yf.EquityQuery('is-in', ['industry', f"{target}"]),
-            yf.EquityQuery('LT', ['pricebookratio.quarterly', averages.loc[f"{target}", 'P/B']]),
-            yf.EquityQuery('LT', ['totaldebtequity.lasttwelvemonths', averages.loc[f"{target}", 'D/E']]),
-            yf.EquityQuery('GTE', ['totalrevenues1yrgrowth.lasttwelvemonths',
-                                   averages.loc[f"{target}", 'Y/Y Revenue Growth']]),
-            yf.EquityQuery('GTE', ['grossprofitmargin.lasttwelvemonths',
-                                   averages.loc[f"{target}", 'Gross Profit Margin']]),
-            yf.EquityQuery('GTE', ['altmanzscoreusingtheaveragestockinformationforaperiod.lasttwelvemonths', 2.8]),
-        ])
+    ind_sec = ind_sec.lower()
+
+    query = yf.EquityQuery('and', [
+        yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
+        yf.EquityQuery('is-in', [f'{ind_sec}', f"{target}"]),
+        yf.EquityQuery('LT', ['pricebookratio.quarterly', averages.loc[f"{target}", 'P/B']]),
+        yf.EquityQuery('LT', ['totaldebtequity.lasttwelvemonths', averages.loc[f"{target}", 'D/E']]),
+        yf.EquityQuery('GTE', ['totalrevenues1yrgrowth.lasttwelvemonths',
+                               averages.loc[f"{target}", 'Y/Y Revenue Growth']]),
+        yf.EquityQuery('GTE', ['grossprofitmargin.lasttwelvemonths',
+                               averages.loc[f"{target}", 'Gross Profit Margin']]),
+        yf.EquityQuery('GTE', ['altmanzscoreusingtheaveragestockinformationforaperiod.lasttwelvemonths', 2.8]),
+    ])
 
     # Create a list of stock tickers from screened stocks
     response = yf.screen(query, sortField='pricebookratio.quarterly', sortAsc=True, size=100)
