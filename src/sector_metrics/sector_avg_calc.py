@@ -88,7 +88,6 @@ def get_names(ticker):
             ticker.get('longName') or
             ticker.get('displayName') or
             'Unknown')
-    print(name)
     return name
 
 

@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 from io import BytesIO
 
 # Initial screen src
-avg, target = initial_screen.choose_category()
-stock_dict, user_choice = initial_screen.screen_stocks(averages=avg, ind_sec=target)
+conn, cursor, category = initial_screen.choose_category()
+stock_dict, user_choice, ttmpe, forwardpe = initial_screen.screen_stocks(cur=cursor, ind_sec=category)
 print(f"Stocks retrieved: \n"
       f"{stock_dict}")
 
@@ -53,8 +53,8 @@ for stock in stock_dict.values():
         continue
 
     # sector P/E stats
-    sector_trailing_pe = avg.loc[f"{user_choice}", 'Trailing P/E']
-    sector_forward_pe = avg.loc[f"{user_choice}", 'Forward P/E']
+    sector_trailing_pe = ttmpe
+    sector_forward_pe = forwardpe
     pe_dict = {'sector_trailing_pe': sector_trailing_pe, 'sector_forward_pe': sector_forward_pe}
     df_pe = pd.DataFrame.from_dict(data=pe_dict, orient='index', columns=['Quick Stats'])
     price_targets = pd.concat([price_targets, df_pe])
