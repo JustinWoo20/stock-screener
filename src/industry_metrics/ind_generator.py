@@ -1,7 +1,22 @@
 # Used to create columns in industry_labels.csv
-import csv
 from scraping.yfinance_scraper import get_industries
-file_header = ['', 'P/B', 'D/E', 'Y/Y', 'Revenue Growth', 'Gross Profit Margin', 'Trailing P/E', 'Forward P/E']
+import shutil
+import sqlite3
+
+# Columns for reference
+# db_columns = ['Industry', 'pb_ratio', 'de_ratio', 'yoy_revenue', 'gross_margin', 'ttmpe', 'forwardpe']
+conn = sqlite3.connect('../../data/blank_templates/industry_blank.db')
+cursor = conn.cursor()
+
+cursor.execute("DROP TABLE IF EXISTS industries")
+cursor.execute("""CREATE TABLE IF NOT EXISTS industries (
+               Industry TEXT NOT NULL,
+               pb_ratio INTEGER,
+               de_ratio INTEGER,
+               yoy_revenue INTEGER,
+               gross_margin INTEGER,
+               ttmpe INTEGER,
+               forwardpe INTEGER)""")
 
 sectors, industries = get_industries()
 industry_list =[]
@@ -9,8 +24,9 @@ for industry in industries.values():
     for i in industry:
         industry_list.append(i)
 
-with open('../../data/blank_templates/industry_labels.csv', 'w', newline='', encoding='utf-8') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(file_header)
-    for item in industry_list:
-        writer.writerow([item])
+rows = [(i,) for i in industry_list]
+cursor.executemany("INSERT INTO industries (Industry) Values (?)", rows)
+conn.commit()
+# Copy template to blank db
+shutil.copy(src='../../data/blank_templates/industry_blank.db', dst='../../data/industry_averages.db')
+conn.close()

@@ -1,4 +1,4 @@
-import csv
+import sqlite3
 import time
 import yfinance as yf
 
@@ -84,51 +84,61 @@ def calculate_denominators(sums_dict, ticker_dict):
     return denominators_dict
 
 def get_names(ticker):
-    try:
-        name = ticker['shortName']
-        print(name)
-    except KeyError:
-        name = ticker['longName']
-        print(name)
-    except:
-        name = ticker['displayName']
-        print(name)
+    name = (ticker.get('shortName') or
+            ticker.get('longName') or
+            ticker.get('displayName') or
+            'Unknown')
+    print(name)
     return name
 
-rows_to_add = []
 
-with open('../../data/blank_templates/industry_labels.csv', encoding='utf-8') as csvfile:
-    reader = csv.reader(csvfile)
-    header = next(reader)
-    rows = list(reader)
-    for r in rows:
-        ind = r[0]
-        # Query finding stocks in various American stock exchanges
-        try:
-            query = yf.EquityQuery('and', [
+
+conn = sqlite3.connect('../../data/industry_averages.db')
+cursor = conn.cursor()
+
+ind_query = cursor.execute("SELECT Industry FROM industries").fetchall()
+
+# Extract strings from tuples
+industry_list = []
+for t in ind_query:
+    for x in t:
+        if isinstance(x, str):
+            industry_list.append(x)
+
+rows_to_add = []
+for ind in industry_list:
+    # Query params
+    try:
+        query = yf.EquityQuery('and', [
             yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
             yf.EquityQuery('is-in', ['industry', f"{ind}"])],)
-        except ValueError:
-            r = [f"{ind}", 0, 0, 0, 0, 0, 0]
-            rows_to_add.append(r)
-            continue
-        # Run the stock query
-        response = yf.screen(query, size=250)
-        print(f'Number of stocks retrieved in {ind}: {response["total"]}')
-        data = response['quotes']
-        # Create a dictionary with names and tickers
-        stock_dict = {get_names(ticker=stocks): stocks['symbol'] for stocks in data}
-        print(stock_dict)
-        # Call functions to get numerator and denominators
-        numerators, missing_values = get_totals(ticker_dict=stock_dict)
-        denominators = calculate_denominators(sums_dict=missing_values, ticker_dict=stock_dict)
-        #  Calculate averages
-        averages = [num / den if den!=0  else None for num, den in zip(numerators.values(), denominators.values())]
-        rows_to_add.append([ind] + averages)
-        time.sleep(1) # Prevent errors with yahoo finance
+    except ValueError:
+        r = [f"{ind}", 0, 0, 0, 0, 0, 0]
+        rows_to_add.append(r)
+        continue
+    # Run the query
+    response = yf.screen(query, size=250)
+    print(f"Number of stocks retrieved in {ind}: {response['total']}")
+    data = response['quotes']
+    # Create a dictionary with names and tickers
+    stock_dict = {get_names(ticker=stocks): stocks['symbol'] for stocks in data}
+    print(stock_dict)
+    # Call functions to get numerator and denominators
+    numerators, missing_values = get_totals(ticker_dict=stock_dict)
+    denominators = calculate_denominators(sums_dict=missing_values, ticker_dict=stock_dict)
+    #  Calculate averages
+    averages = [num / den if den != 0 else None for num, den in zip(numerators.values(), denominators.values())]
+    rows_to_add.append([ind] + averages)
+    time.sleep(1)  # Prevent errors with yahoo finance
 
-with open('../../data/industry_averages.csv', 'w', newline='', encoding='utf-8') as outfile:
-    writer = csv.writer(outfile)
-    writer.writerow(header)
-    for r in rows_to_add:
-        writer.writerow(r)
+cursor.executemany("""UPDATE industries SET
+                    pb_ratio = ?,
+                    de_ratio = ?,
+                    yoy_revenue = ?,
+                    gross_margin = ?,
+                    ttmpe = ?, 
+                    'forwardpe' = ?
+                    WHERE Industry = ?""",
+                   [(row[1], row[2], row[3], row[4], row[5], row[6], row[0]) for row in rows_to_add])
+conn.commit()
+conn.close()
