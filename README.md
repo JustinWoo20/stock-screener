@@ -53,24 +53,39 @@ the following requirements to avoid "value traps":
 ```
 stock-screener
 ├── data/
-│   └── sector_averages.csv # Data for sector average comparisons
-├── notebooks # Initial data analysis notebooks
+│   ├── blank_templates/
+│   │   ├── industry_blank.db
+│   │   └── sector_blank.db
+│   ├── industry_averages.db # Data for industry average comparisons
+│   └── sector_averages.db # Data for sector average comparisons
+├── notebooks/ # Initial data analysis notebooks
+│   ├── eps.ipynb
 │   ├── oversold-tech-stocks.ipynb
 │   └── wix.ipynb
-├── outputs # Example outputs
+├── outputs/ # Example outputs
 │   ├── ex_images/
 │   │   ├── FICO_RSI.png
 │   │   └── WIX_netIncome.png
-│   ├── Communication Services_2025-12-07.xlsx  
-│   ├── Healthcare_2025-12-07.xlsx
-│   └── Technology_2025-12-07.xlsx
+│   ├── Communication Services_2026-02-04.xlsx  
+│   ├── Healthcare_2026-02-04.xlsx
+│   └── Technology_2026-02-04.xlsx
+├── scraping/
+│   └── yfinance_scraper.py # Use to obtain industry and sector labels
 ├── scripts # Contains main script for analysis
 │   └── main.py
 ├── src # Source scripts for screening and analysis
-│   ├── financial_metrics.py
-│   ├── get_financials.py
-│   ├── initial_screen.py
-│   └── technical_indicators.py
+│   ├── industry_metrics/ # Use to update industry averages
+│   │   ├── ind_avg_calc.py
+│   │   └── ind_generator.py
+│   ├── screening/ # scripts for main.py
+│   │   ├── earnings.py
+│   │   ├── financial_metrics.py
+│   │   ├── get_financials.py
+│   │   ├── initial_screen.py
+│   │   └── technical_indicators.py
+│   └── sector_metrics/ # Use to update sector metrics
+│       ├── sector_avg_calc.py
+│       └── sector_generator.py
 ├── README.md # Current file
 └── requirements.txt # Required packages
 ```
@@ -128,6 +143,11 @@ macOS/Linux ```source .venv/bin/activate```
 
 ### 📜 License
 MIT License – free to use, modify, and distribute.
+
+---
+
+### 🎯 Update
+- Refactored from csv to SQLite
 
 ---
 ### ⚠️ Disclaimer
