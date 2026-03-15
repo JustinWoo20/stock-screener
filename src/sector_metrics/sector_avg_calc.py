@@ -23,7 +23,10 @@ def get_totals(ticker_dict):
         # Calculate the numerator for each metric
         try:
             pb = ticker_info['priceToBook']
-            total_pb += pb
+            if pb > 0:
+                total_pb += pb
+            else:
+                continue
         except KeyError:
             missing_pb += 1
 
@@ -128,7 +131,7 @@ for s in sector_list:
     #  Calculate averages
     averages = [num / den if den != 0 else None for num, den in zip(numerators.values(), denominators.values())]
     rows_to_add.append([s] + averages)
-    time.sleep(1)  # Prevent errors with yahoo finance
+    time.sleep(5)  # Prevent errors with yahoo finance
 
 cursor.executemany("""UPDATE sectors SET
                     pb_ratio = ?,

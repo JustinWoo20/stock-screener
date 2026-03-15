@@ -48,7 +48,7 @@ def screen_stocks(cur, ind_sec):
     query = yf.EquityQuery('and', [
         yf.EquityQuery('is-in', ['exchange', 'NYQ', 'NMS', 'ASE', 'NCM']),
         yf.EquityQuery('is-in', [f'{ind_sec}', f"{target}"]),
-        yf.EquityQuery('LT', ['pricebookratio.quarterly', pb]),
+        yf.EquityQuery('BTWN', ['pricebookratio.quarterly', 0, pb]),
         yf.EquityQuery('LT', ['totaldebtequity.lasttwelvemonths', de]),
         yf.EquityQuery('GTE', ['totalrevenues1yrgrowth.lasttwelvemonths', rev]),
         yf.EquityQuery('GTE', ['grossprofitmargin.lasttwelvemonths',grossmarg]),
