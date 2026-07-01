@@ -13,8 +13,8 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS industries (
                Industry TEXT NOT NULL,
                pb_ratio INTEGER,
                de_ratio INTEGER,
-               yoy_revenue INTEGER,
-               gross_margin INTEGER,
+               revenue_growth INTEGER,
+               gpm INTEGER,
                ttmpe INTEGER,
                forwardpe INTEGER)""")
 

@@ -137,8 +137,8 @@ for ind in industry_list:
 cursor.executemany("""UPDATE industries SET
                     pb_ratio = ?,
                     de_ratio = ?,
-                    yoy_revenue = ?,
-                    gross_margin = ?,
+                    revenue_growth = ?,
+                    gpm = ?,
                     ttmpe = ?, 
                     'forwardpe' = ?
                     WHERE Industry = ?""",
